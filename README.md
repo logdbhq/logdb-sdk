@@ -7,6 +7,9 @@
 
 This README is aligned with `logdocs` (`/sdk/client`, `/sdk/serilog`, `/sdk/nlog`) as of **2026-03-31**.
 
+Full documentation:
+- https://docs.logdb.dev/
+
 ## Package Snapshot
 
 | Package | Current version | Frameworks |
