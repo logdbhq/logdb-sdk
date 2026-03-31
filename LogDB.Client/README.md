@@ -1,6 +1,6 @@
 # LogDB.Client
 
-**Package Version: 5.0.19** | **README Updated: 2026-03-11**
+**Package Version: 5.1.0** | **README Updated: 2026-03-31**
 
 Complete .NET client for LogDB - the modern logging and observability platform.
 
@@ -757,3 +757,5 @@ options.Headers["X-Tenant"] = "customer-a";
 # License
 
 MIT License - see LICENSE file for details.
+
+

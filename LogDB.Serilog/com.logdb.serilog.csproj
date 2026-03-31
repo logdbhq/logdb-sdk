@@ -11,7 +11,7 @@
 		
 		<!-- Package Identity -->
 		<PackageId>LogDB.Serilog</PackageId>
-		<Version>5.0.19</Version>
+		<Version>5.1.0</Version>
 		<Authors>LogDB Team</Authors>
 		<Company>LogDB</Company>
 		<Product>LogDB Serilog Sink</Product>
@@ -33,8 +33,8 @@
 		
 		<!-- Release Notes -->
 		<PackageReleaseNotes>
-v5.0.19 - Version Bump
-- Incremental release for LogDB.Serilog
+v5.1.0 - Version Line Alignment
+- Aligns LogDB.Serilog with the AutoMapper-free LogDB.Client 5.1.0 package
 - Keeps package metadata aligned with docs and publish pipeline
 - No breaking API changes
 
@@ -96,4 +96,11 @@ v1.0.0 - Initial Release
 	</ItemGroup>
 
 </Project>
+
+
+
+
+
+
+
 

@@ -10,7 +10,7 @@
 		
 		<!-- Package Identity -->
 		<PackageId>LogDB.Client</PackageId>
-		<Version>5.0.19</Version>
+		<Version>5.1.0</Version>
 		<Authors>LogDB Team</Authors>
 		<Company>LogDB</Company>
 		<Product>LogDB .NET Client</Product>
@@ -32,9 +32,9 @@
 		
 		<!-- Release Notes -->
 		<PackageReleaseNotes>
-v5.0.19 - Version Bump
-- Incremental release for LogDB.Client
-- Keeps package metadata aligned with docs and publish pipeline
+v5.1.0 - AutoMapper-Free Public Release
+- Publishes the zero-dependency gRPC mapper implementation in a new public release line
+- Removes stale AutoMapper dependency metadata from the distributed package
 - No breaking API changes
 
 v5.0.18 - Version Line Alignment
@@ -148,3 +148,10 @@ v4.0.10 - Previous Release
 	</ItemGroup>
 
 </Project>
+
+
+
+
+
+
+

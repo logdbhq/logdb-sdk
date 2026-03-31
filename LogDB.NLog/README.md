@@ -1,6 +1,6 @@
 # LogDB.NLog
 
-**Package Version: 5.0.19** | **README Updated: 2026-03-11**
+**Package Version: 5.1.0** | **README Updated: 2026-03-31**
 
 NLog target for LogDB - Send your NLog logs directly to LogDB with full structured logging support, filtering, and batching.
 
@@ -514,3 +514,5 @@ Both implementations use the same underlying `LogDBClient` for sending logs, ens
 ## License
 
 MIT License - see LICENSE file for details.
+
+

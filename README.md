@@ -5,15 +5,15 @@
 - `LogDB.Serilog`
 - `LogDB.NLog`
 
-This README is aligned with `logdocs` (`/sdk/client`, `/sdk/serilog`, `/sdk/nlog`) as of **2026-03-11**.
+This README is aligned with `logdocs` (`/sdk/client`, `/sdk/serilog`, `/sdk/nlog`) as of **2026-03-31**.
 
 ## Package Snapshot
 
 | Package | Current version | Frameworks |
 |---|---:|---|
-| `LogDB.Client` | `5.0.19` | `net472`, `net8.0`, `net9.0`, `net10.0` |
-| `LogDB.Serilog` | `5.0.19` | `net472`, `net8.0`, `net9.0`, `net10.0` |
-| `LogDB.NLog` | `5.0.19` | `net472`, `net8.0`, `net9.0`, `net10.0` |
+| `LogDB.Client` | `5.1.0` | `net472`, `net8.0`, `net9.0`, `net10.0` |
+| `LogDB.Serilog` | `5.1.0` | `net472`, `net8.0`, `net9.0`, `net10.0` |
+| `LogDB.NLog` | `5.1.0` | `net472`, `net8.0`, `net9.0`, `net10.0` |
 
 NuGet source:
 
@@ -154,9 +154,9 @@ Workflows:
 - `.github/workflows/publish-nlog-on-tag.yml`
 
 Tag triggers (push):
-- `client-v*` publishes `LogDB.Client` (e.g. `client-v5.0.19`)
-- `serilog-v*` publishes `LogDB.Serilog` (e.g. `serilog-v5.0.19`)
-- `nlog-v*` publishes `LogDB.NLog` (e.g. `nlog-v5.0.19`)
+- `client-v*` publishes `LogDB.Client` (e.g. `client-v5.1.0`)
+- `serilog-v*` publishes `LogDB.Serilog` (e.g. `serilog-v5.1.0`)
+- `nlog-v*` publishes `LogDB.NLog` (e.g. `nlog-v5.1.0`)
 
 Each workflow also supports manual `workflow_dispatch` with `version` input.
 
@@ -168,3 +168,6 @@ PAT scopes:
 - `write:packages`
 - `read:packages`
 - plus `repo` when repository is private
+
+
+

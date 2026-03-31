@@ -1,6 +1,6 @@
 # LogDB.Serilog
 
-**Package Version: 5.0.19** | **README Updated: 2026-03-11**
+**Package Version: 5.1.0** | **README Updated: 2026-03-31**
 
 Serilog sink for LogDB - Send your Serilog logs directly to LogDB with full structured logging support.
 
@@ -327,3 +327,5 @@ Log.Logger = new LoggerConfiguration()
 ## License
 
 MIT License - see LICENSE file for details.
+
+
