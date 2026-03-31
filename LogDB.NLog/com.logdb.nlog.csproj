@@ -11,7 +11,7 @@
 		
 		<!-- Package Identity -->
 		<PackageId>LogDB.NLog</PackageId>
-		<Version>5.1.0</Version>
+		<Version>5.1.1</Version>
 		<Authors>LogDB Team</Authors>
 		<Company>LogDB</Company>
 		<Product>LogDB NLog Target</Product>
@@ -33,8 +33,8 @@
 		
 		<!-- Release Notes -->
 		<PackageReleaseNotes>
-v5.1.0 - Version Line Alignment
-- Aligns LogDB.NLog with the AutoMapper-free LogDB.Client 5.1.0 package
+v5.1.1 - NuGet.org Release
+- Aligns LogDB.NLog with LogDB.Client 5.1.1 for nuget.org publishing
 - Keeps package metadata aligned with docs and publish pipeline
 - No breaking API changes
 

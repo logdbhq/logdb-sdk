@@ -1,6 +1,6 @@
 # LogDB.Client
 
-**Package Version: 5.1.0** | **README Updated: 2026-03-31**
+**Package Version: 5.1.1** | **README Updated: 2026-03-31**
 
 Complete .NET client for LogDB - the modern logging and observability platform.
 
@@ -11,14 +11,15 @@ Complete .NET client for LogDB - the modern logging and observability platform.
 ## Installation
 
 ```bash
-dotnet add package LogDB.Client --source "https://nuget.pkg.github.com/logdbhq/index.json"
+dotnet add package LogDB.Client
 ```
 
 Add to your `nuget.config`:
 ```xml
 <configuration>
   <packageSources>
-    <add key="github" value="https://nuget.pkg.github.com/logdbhq/index.json" />
+    <clear />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
   </packageSources>
 </configuration>
 ```

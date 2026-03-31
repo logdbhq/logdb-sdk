@@ -1,13 +1,13 @@
 # LogDB.Serilog
 
-**Package Version: 5.1.0** | **README Updated: 2026-03-31**
+**Package Version: 5.1.1** | **README Updated: 2026-03-31**
 
 Serilog sink for LogDB - Send your Serilog logs directly to LogDB with full structured logging support.
 
 ## Installation
 
 ```bash
-dotnet add package LogDB.Serilog --source "https://nuget.pkg.github.com/logdbhq/index.json"
+dotnet add package LogDB.Serilog
 ```
 
 ## Quick Start

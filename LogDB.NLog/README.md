@@ -1,13 +1,13 @@
 # LogDB.NLog
 
-**Package Version: 5.1.0** | **README Updated: 2026-03-31**
+**Package Version: 5.1.1** | **README Updated: 2026-03-31**
 
 NLog target for LogDB - Send your NLog logs directly to LogDB with full structured logging support, filtering, and batching.
 
 ## Installation
 
 ```bash
-dotnet add package LogDB.NLog --source "https://nuget.pkg.github.com/logdbhq/index.json"
+dotnet add package LogDB.NLog
 ```
 
 ## Quick Start

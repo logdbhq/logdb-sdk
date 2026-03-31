@@ -11,20 +11,20 @@ This README is aligned with `logdocs` (`/sdk/client`, `/sdk/serilog`, `/sdk/nlog
 
 | Package | Current version | Frameworks |
 |---|---:|---|
-| `LogDB.Client` | `5.1.0` | `net472`, `net8.0`, `net9.0`, `net10.0` |
-| `LogDB.Serilog` | `5.1.0` | `net472`, `net8.0`, `net9.0`, `net10.0` |
-| `LogDB.NLog` | `5.1.0` | `net472`, `net8.0`, `net9.0`, `net10.0` |
+| `LogDB.Client` | `5.1.1` | `net472`, `net8.0`, `net9.0`, `net10.0` |
+| `LogDB.Serilog` | `5.1.1` | `net472`, `net8.0`, `net9.0`, `net10.0` |
+| `LogDB.NLog` | `5.1.1` | `net472`, `net8.0`, `net9.0`, `net10.0` |
 
 NuGet source:
 
 ```txt
-https://nuget.pkg.github.com/logdbhq/index.json
+https://api.nuget.org/v3/index.json
 ```
 
 ## Install
 
 ```bash
-dotnet add package LogDB.Client --source "https://nuget.pkg.github.com/logdbhq/index.json"
+dotnet add package LogDB.Client
 ```
 
 `nuget.config`:
@@ -32,7 +32,8 @@ dotnet add package LogDB.Client --source "https://nuget.pkg.github.com/logdbhq/i
 ```xml
 <configuration>
   <packageSources>
-    <add key="github" value="https://nuget.pkg.github.com/logdbhq/index.json" />
+    <clear />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
   </packageSources>
 </configuration>
 ```
@@ -146,7 +147,7 @@ Serilog:
 NLog:
 - Entry point: `LogDBTarget` / `xsi:type="LogDB"`
 
-## Package Publishing (GitHub Packages)
+## Package Publishing (NuGet.org)
 
 Workflows:
 - `.github/workflows/publish-client-on-tag.yml`
@@ -154,20 +155,20 @@ Workflows:
 - `.github/workflows/publish-nlog-on-tag.yml`
 
 Tag triggers (push):
-- `client-v*` publishes `LogDB.Client` (e.g. `client-v5.1.0`)
-- `serilog-v*` publishes `LogDB.Serilog` (e.g. `serilog-v5.1.0`)
-- `nlog-v*` publishes `LogDB.NLog` (e.g. `nlog-v5.1.0`)
+- `client-v*` publishes `LogDB.Client` (e.g. `client-v5.1.1`)
+- `serilog-v*` publishes `LogDB.Serilog` (e.g. `serilog-v5.1.1`)
+- `nlog-v*` publishes `LogDB.NLog` (e.g. `nlog-v5.1.1`)
 
 Each workflow also supports manual `workflow_dispatch` with `version` input.
 
 Required repository secrets:
-- `NUGET_PAT`
-- `NUGET_USERNAME`
+- `NUGET_API_KEY`
 
-PAT scopes:
-- `write:packages`
-- `read:packages`
-- plus `repo` when repository is private
+NuGet.org setup:
+- Create an account or sign in at `nuget.org`
+- Create an API key with `Push` scope
+- Prefer a package scope such as `LogDB.*` instead of `*`
+- Store that value in the GitHub repository secret `NUGET_API_KEY`
 
 
 
