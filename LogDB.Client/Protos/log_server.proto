@@ -1,0 +1,560 @@
+syntax = "proto3";
+
+option csharp_namespace = "LogDB.Grpc";  // matches your generated client namespace
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+// Sorting information
+message SortInfo {
+  string field = 1;      // Field name to sort by (e.g., "timestamp", "level", "id")
+  bool ascending = 2;    // true for ASC, false for DESC
+}
+
+// Request from client – carries paging parameters
+message LogRequest {
+  int32 skip = 1;  // how many records to skip
+  int32 take = 2;  // how many records to return
+  google.protobuf.Timestamp  LatestDateIn = 3;
+  string token = 4;
+  int32 accountId = 7;
+  
+  // Sorting information (temporary workaround using search_string)
+  string search_string = 5;  // Used for temporary sorting: "SORT:field:ASC/DESC"
+  SortInfo sort_info = 6;    // Future proper implementation
+  
+  // Filter by collections (bucket names for Points/Beats)
+  repeated string collections = 8;
+}
+
+// Extended request for filtered queries
+message FilteredLogRequest {
+  int32 skip = 1;  // how many records to skip
+  int32 take = 2;  // how many records to return
+  string token = 3;
+  
+  // Filter criteria
+  repeated string collections = 4;
+  string application = 5;
+  string environment = 6;
+  string level = 7;
+  string message = 8;
+  string exception = 9;
+  string source = 10;
+  int32 user_id = 11;
+  string user_email = 12;
+  string correlation_id = 13;
+  string request_path = 14;
+  string http_method = 15;
+  string ip_address = 16;
+  int32 status_code = 17;
+  string search_string = 18;
+  google.protobuf.Timestamp from_date = 19;
+  google.protobuf.Timestamp to_date = 20;
+  
+  // Sorting information
+  SortInfo sort_info = 21;
+  int32 accountId = 22;
+
+}
+
+// Extended request for filtered log cache queries
+message FilteredLogCacheRequest {
+  int32 skip = 1;
+  int32 take = 2;
+  string token = 3;
+  
+  // Filter criteria
+  string key = 4;
+  string value = 5;
+  string search_string = 6;
+  google.protobuf.Timestamp from_date = 7;
+  google.protobuf.Timestamp to_date = 8;
+  int32 accountId = 9;
+
+}
+
+// Extended request for filtered log point queries
+message FilteredLogPointRequest {
+  int32 skip = 1;
+  int32 take = 2;
+  string token = 3;
+  
+  // Filter criteria
+  repeated string collections = 4;
+  string measurement = 5;
+  string bucket = 6;
+  string search_string = 7;
+  google.protobuf.Timestamp from_date = 8;
+  google.protobuf.Timestamp to_date = 9;
+  int32 accountId = 10;
+
+}
+
+// Extended request for filtered log beat queries
+message FilteredLogBeatRequest {
+  int32 skip = 1;
+  int32 take = 2;
+  string token = 3;
+  
+  // Filter criteria
+  repeated string collections = 4;
+  string measurement = 5;
+  string search_string = 6;
+  google.protobuf.Timestamp from_date = 7;
+  google.protobuf.Timestamp to_date = 8;
+  int32 accountId = 9;
+
+}
+
+// Extended request for filtered log relation queries
+message FilteredLogRelationRequest {
+  int32 skip = 1;
+  int32 take = 2;
+  string token = 3;
+  
+  // Filter criteria
+  repeated string collections = 4;
+  string origin = 5;
+  string subject = 6;
+  string relation = 7;
+  string search_string = 8;
+  google.protobuf.Timestamp from_date = 9;
+  google.protobuf.Timestamp to_date = 10;
+  int32 accountId = 11;
+  
+}
+
+enum LogLevel {
+  INFO = 0;
+  WARNING = 1;
+  ERROR = 2;
+  CRITICAL = 3;
+}
+
+message LogCacheEntry {
+  string                      key = 1;
+  string                      value = 2;
+  google.protobuf.Timestamp    timestamp = 3;
+  int32                       account_id = 4;
+  string                      account_name = 5;
+}
+
+message LogPointEntry {
+  string measurement = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  repeated KeyValue tags = 3;   // Repeated field to represent a dictionary of tags
+  repeated KeyValue fields = 4; // Repeated field to represent a dictionary of fields
+  string bucket = 5;            // Bucket name as collection
+  string collection = 6;        // Collection field for proper filtering
+  int32 account_id = 7;         // Account ID field
+  string account_name = 8;      // Account name for display
+  string environment = 9;       // Environment/Device ID field
+}
+
+message KeyValue {
+  string key = 1;
+  string value = 2; // We store values as strings for simplicity. You can modify this for other types.
+}
+
+message LogRelationEntry {
+  string origin = 1;
+  string subject = 2;
+  string relation = 3;
+  string guid = 4;
+  map<string, string> origin_properties = 5;
+  map<string, string> subject_properties = 6;
+  map<string, string> relation_properties = 7;
+  string collection = 8;
+  google.protobuf.Timestamp date_in = 9;
+  int32 account_id = 10;
+  string account_name = 11;
+}
+// A single log entry in the reply
+message LogEntry {
+  int32              id = 1;
+  google.protobuf.Timestamp    timestamp = 2;
+  string            application = 3;
+  string            environment = 4;
+  string            level = 5;
+  string            message = 6;
+  string            exception = 7;
+  string            stack_trace = 8;
+  string            source = 9;
+  google.protobuf.Int32Value    user_id = 10;
+  string            user_email = 11;
+  string            correlation_id = 12;
+  string            request_path = 13;
+  string            http_method = 14;
+  string            additional_data = 15;
+  string            ip_address = 16;
+  google.protobuf.Int32Value  status_code = 17;
+  string            description = 18;
+  string            guid = 19;
+  google.protobuf.Timestamp    _DateIn = 20;
+
+  repeated string label = 21;
+  map<string, string> attribute_s = 22;
+  map<string, double> attribute_n = 23;
+  map<string, bool> attribute_b = 24;
+  map<string, google.protobuf.Timestamp> attribute_d = 25;
+  
+  string            collection = 26;
+  int32             account_id = 27;
+  string            account_name = 28;
+  
+}
+
+// Reply from server a collection of LogEntry
+message LogReply {
+  repeated LogEntry logEntries = 1;
+  repeated LogCacheEntry logCacheEntries = 2;
+  repeated LogPointEntry logPointEntries = 3;
+  repeated LogRelationEntry logRelationEntries = 4;
+  repeated LogPointEntry logBeatEntries = 5;
+
+  // Progress information for better UX
+  int32 totalRecordsAvailable = 6;  // Total number of records available for download
+  int32 currentBatchSize = 7;       // Number of records in this batch
+  int32 recordsDownloadedSoFar = 8; // Cumulative records downloaded so far
+  bool hasMoreRecords = 9;          // Whether there are more records to download
+}
+
+// Count reply for pre-fetch count queries
+message CountReply {
+  int32 count = 1;
+}
+
+// Filtered query reply with total count
+message FilteredLogReply {
+  repeated LogEntry logEntries = 1;
+  int32 totalCount = 2;
+}
+
+message FilteredLogCacheReply {
+  repeated LogCacheEntry logCacheEntries = 1;
+  int32 totalCount = 2;
+}
+
+message FilteredLogPointReply {
+  repeated LogPointEntry logPointEntries = 1;
+  int32 totalCount = 2;
+}
+
+message FilteredLogBeatReply {
+  repeated LogPointEntry logBeatEntries = 1;
+  int32 totalCount = 2;
+}
+
+message FilteredLogRelationReply {
+  repeated LogRelationEntry logRelationEntries = 1;
+  int32 totalCount = 2;
+}
+
+message LogCacheKeyReply {
+  repeated string keys = 1;
+}
+
+message Empty {}
+
+message AccessTokenRequest {
+  string token = 1;
+  int32 accountId = 2;
+
+}
+
+message FilteredCollectionsRequest {
+  string token = 1;
+  repeated int32 account_ids = 2;
+}
+
+// Delete request for filtered log cache deletion
+message DeleteLogCachesFilteredRequest {
+  string token = 1;
+  int32 accountId = 2;
+  
+  // Filter criteria (same as FilteredLogCacheRequest)
+  string key = 3;
+  string value = 4;
+  string search_string = 5;
+  google.protobuf.Timestamp from_date = 6;
+  google.protobuf.Timestamp to_date = 7;
+}
+
+// Delete response
+message DeleteResponse {
+  int32 deletedCount = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+// List of distinct collections from log data
+message CollectionListReply {
+  repeated string collections = 1;
+}
+
+// User account information
+message UserAccountInfo {
+  int32 accountId = 1;
+  string accountName = 2;
+  bool isActive = 3;
+}
+
+// List of user accounts
+message UserAccountsReply {
+  repeated UserAccountInfo accounts = 1;
+}
+
+// Database size request
+message DatabaseSizeRequest {
+  string token = 1;
+  int32 accountId = 2;
+}
+
+// Individual repository size info
+message RepositorySizeInfo {
+  string repositoryName = 1;
+  int64 recordCount = 2;
+  int64 sizeBytes = 3;
+  string sizeFormatted = 4;
+}
+
+// Database size reply
+message DatabaseSizeReply {
+  int32 accountId = 1;
+  string accountName = 2;
+  google.protobuf.Timestamp queryTimestamp = 3;
+  
+  RepositorySizeInfo logs = 4;
+  RepositorySizeInfo logCaches = 5;
+  RepositorySizeInfo logPoints = 6;
+  RepositorySizeInfo logBeats = 7;
+  RepositorySizeInfo logRelations = 8;
+  
+  int64 totalRecords = 9;
+  int64 totalSizeBytes = 10;
+  string totalSizeFormatted = 11;
+}
+
+// AI Chat request
+message AiChatRequest {
+  string token = 1;
+  string prompt = 2;
+  string context = 3;
+  string model = 4;       // Optional: override default model
+  int32 accountId = 5;
+}
+
+// AI Chat reply
+message AiChatReply {
+  bool success = 1;
+  string response = 2;
+  string error = 3;
+  string model = 4;       // Model that was used
+  double credits_consumed = 5;   // Credits consumed by this request
+  double credits_remaining = 6;  // Remaining credit balance
+}
+
+// AI Credit Balance request
+message AiCreditBalanceRequest {
+  string token = 1;
+  int32 accountId = 2;
+}
+
+// AI Credit Balance reply
+message AiCreditBalanceReply {
+  bool success = 1;
+  int32 accountId = 2;
+  double total_credits = 3;
+  double available_credits = 4;
+  double used_credits = 5;
+  double locked_credits = 6;
+  string error = 7;
+}
+
+// AI Credit Pricing request
+message AiCreditPricingRequest {
+  string token = 1;
+}
+
+// Single model pricing entry
+message AiModelPricing {
+  string model = 1;
+  string provider = 2;
+  string display_name = 3;
+  double credits_per_1k_input = 4;
+  double credits_per_1k_output = 5;
+}
+
+// AI Credit Pricing reply
+message AiCreditPricingReply {
+  bool success = 1;
+  repeated AiModelPricing models = 2;
+}
+
+// AI Credit Pack (for purchase)
+message AiCreditPack {
+  string code = 1;
+  string name = 2;
+  double credits = 3;
+  double price_usd = 4;
+  string bonus_label = 5;
+}
+
+// AI Credit Packs reply
+message AiCreditPacksReply {
+  bool success = 1;
+  repeated AiCreditPack packs = 2;
+}
+
+// The service binding
+service LogGrpcServerService {
+
+  rpc GetLogEvents (LogRequest) returns (LogReply);
+  rpc GetLogCaches (LogRequest) returns (LogReply);
+  rpc GetLogPoints (LogRequest) returns (LogReply);
+  rpc GetLogBeats (LogRequest) returns (LogReply);
+  rpc GetLogRelations (LogRequest) returns (LogReply);
+
+  // Count methods for progress tracking
+  rpc GetLogEventsCount (LogRequest) returns (CountReply);
+  rpc GetLogBeatsCount (LogRequest) returns (CountReply);
+  rpc GetLogWindowsEventsCount (FilteredLogRequest) returns (CountReply);
+  rpc GetLogIISEventsCount (FilteredLogRequest) returns (CountReply);
+  rpc GetLogWindowsMetricsCount (FilteredLogRequest) returns (CountReply);
+
+  rpc GetLogCacheAllKeys (AccessTokenRequest) returns (LogCacheKeyReply);
+  rpc GetDistinctCollections (AccessTokenRequest) returns (CollectionListReply);
+  rpc GetDistinctCollectionsByAccounts (FilteredCollectionsRequest) returns (CollectionListReply);
+  
+  // New filtered query methods
+  rpc GetLogsFiltered (FilteredLogRequest) returns (FilteredLogReply);
+  rpc GetLogCachesFiltered (FilteredLogCacheRequest) returns (FilteredLogCacheReply);
+  rpc GetLogPointsFiltered (FilteredLogPointRequest) returns (FilteredLogPointReply);
+  rpc GetLogBeatsFiltered (FilteredLogBeatRequest) returns (FilteredLogBeatReply);
+  rpc GetLogRelationsFiltered (FilteredLogRelationRequest) returns (FilteredLogRelationReply);
+  
+  // User account management
+  rpc GetUserAccounts (AccessTokenRequest) returns (UserAccountsReply);
+  
+  // Delete methods
+  rpc DeleteLogCachesFiltered (DeleteLogCachesFilteredRequest) returns (DeleteResponse);
+  
+  // Database size information
+  rpc GetDatabaseSize (DatabaseSizeRequest) returns (DatabaseSizeReply);
+  
+  // AI Chat - proxies to OpenAI/Claude using backend API keys
+  rpc AiChat (AiChatRequest) returns (AiChatReply);
+
+  // AI Credits
+  rpc GetAiCreditBalance (AiCreditBalanceRequest) returns (AiCreditBalanceReply);
+  rpc GetAiCreditPricing (AiCreditPricingRequest) returns (AiCreditPricingReply);
+  rpc GetAiCreditPacks (AiCreditPricingRequest) returns (AiCreditPacksReply);
+
+  // Windows Event Logs
+  rpc GetLogWindowsEvents (FilteredLogRequest) returns (LogWindowsEventReply);
+  
+  // IIS Event Logs
+  rpc GetLogIISEvents (FilteredLogRequest) returns (LogIISEventReply);
+  
+  // Windows Metrics
+  rpc GetLogWindowsMetrics (FilteredLogRequest) returns (LogWindowsMetricsReply);
+  
+  // Tab Visibility Check
+  rpc GetEventLogStatus (EventLogStatusRequest) returns (EventLogStatusReply);
+}
+
+message LogWindowsEventEntry {
+    int32 id = 1;
+    google.protobuf.Timestamp time_created = 2;
+    string provider_name = 3;
+    string channel = 4;
+    string task = 5;
+    string opcode = 6;
+    string level = 7;
+    string keywords = 8;
+    string computer = 9;
+    string user_id = 10;
+    string message = 11;
+    string xml_data = 12;
+    int32 account_id = 13;
+    google.protobuf.Timestamp date_in = 14;
+    string collection = 15;
+    string ip_address = 16;
+}
+
+message LogWindowsEventReply {
+   repeated LogWindowsEventEntry events = 1;
+   int32 totalCount = 2;
+}
+
+message EventLogStatusRequest {
+  string token = 1;
+  int32 accountId = 2;
+}
+
+message EventLogStatusReply {
+  bool hasWindowsEvents = 1;
+  bool hasIISEvents = 2;
+  bool hasWindowsMetrics = 3;
+}
+
+// IIS Log Entry for gRPC transfer
+message LogIISEventEntry {
+    int32 id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    string method = 3;
+    string status_code = 4;
+    string uri_stem = 5;
+    string uri_query = 6;
+    string client_ip = 7;
+    string server_ip = 8;
+    string server_port = 9;
+    string user_agent = 10;
+    string time_taken = 11;
+    string bytes_sent = 12;
+    string bytes_received = 13;
+    string site_name = 14;
+    string username = 15;
+    string referer = 16;
+    string host = 17;
+    string protocol_version = 18;
+    string sub_status = 19;
+    string win32_status = 20;
+    string source_file = 21;
+    string site_id = 22;
+    string collection = 23;
+    int32 account_id = 24;
+    google.protobuf.Timestamp date_in = 25;
+}
+
+// IIS Log Events Reply
+message LogIISEventReply {
+   repeated LogIISEventEntry events = 1;
+   int32 totalCount = 2;
+}
+
+// Windows Metrics Entry for gRPC transfer
+message LogWindowsMetricsEntry {
+    int32 id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    string measurement = 3;
+    string server_name = 4;
+    string environment = 5;
+    double cpu_usage_percent = 6;
+    double memory_usage_percent = 7;
+    double disk_usage_percent = 8;
+    double network_speed_mbps = 9;
+    string tags = 10;
+    string fields = 11;
+    int32 account_id = 12;
+    google.protobuf.Timestamp date_in = 13;
+    string collection = 14;
+    string guid = 15;
+}
+
+// Windows Metrics Reply
+message LogWindowsMetricsReply {
+   repeated LogWindowsMetricsEntry metrics = 1;
+   int32 totalCount = 2;
+}
+

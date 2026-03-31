@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/LogDB.Client/">
+    <Project Path="LogDB.Client/com.logdb.logger.csproj" />
+  </Folder>
+  <Folder Name="/LogDB.NLog/">
+    <Project Path="LogDB.NLog/com.logdb.nlog.csproj" />
+  </Folder>
+  <Folder Name="/LogDB.Serilog/">
+    <Project Path="LogDB.Serilog/com.logdb.serilog.csproj" />
+  </Folder>
+  <Project Path="LogDB.Client.Tests/LogDB.Client.Tests.csproj" />
+</Solution>

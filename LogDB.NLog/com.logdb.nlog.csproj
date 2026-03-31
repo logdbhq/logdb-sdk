@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net472;net8.0;net9.0;net10.0</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild Condition="'$(CI)' == 'true'">false</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild Condition="'$(CI)' != 'true'">true</GeneratePackageOnBuild>
+		
+		<!-- Package Identity -->
+		<PackageId>LogDB.NLog</PackageId>
+		<Version>5.0.19</Version>
+		<Authors>LogDB Team</Authors>
+		<Company>LogDB</Company>
+		<Product>LogDB NLog Target</Product>
+		<Description>NLog target for LogDB - Send your NLog logs directly to LogDB with full structured logging support, filtering, and batching.</Description>
+		
+		<!-- Package Metadata -->
+		<PackageProjectUrl>https://github.com/logdbhq/logdb-sdk</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/logdbhq/logdb-sdk</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>nlog;target;logging;logdb;telemetry;monitoring;observability;filtering</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		
+		<!-- GitHub Packages -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		
+		<!-- Release Notes -->
+		<PackageReleaseNotes>
+v5.0.19 - Version Bump
+- Incremental release for LogDB.NLog
+- Keeps package metadata aligned with docs and publish pipeline
+- No breaking API changes
+
+v5.0.18 - Version Line Alignment
+- Aligns NLog package with LogDB.Client and Serilog 5.0.18 line
+- No API shape changes
+
+v5.0.17 - Mandatory Payload Type + Enum Routing
+- Added public LogDBPayloadType enum (Log, Cache, Beat)
+- LogDBType routing is now explicit: missing type no longer silently defaults to Log
+- Added LogDBTarget.DefaultPayloadType for explicit global default when desired
+- Updated README and examples to use enum-based routing
+
+v5.0.16 - Version Line Alignment
+- Aligns NLog package version with active 5.x release train so package managers treat it as latest
+- Includes Cache + Beat property-based routing
+
+v1.0.4 - Cache + Beat Routing
+- Added property-based routing to LogCache and LogBeat via LogDBType markers
+- Added support for LogDBCacheKey/Value/Ttl and LogDBMeasurement/Tags/Fields
+- Updated docs and integration examples for Cache/Beat routing
+
+v1.0.1 - Packaging Fixes
+- Fixed NuGet dependency metadata to include LogDB.Client for runtime
+- Removed unintended dependency on LogDB.Shared
+
+v1.0.0 - Initial Release
+- NLog target for LogDB
+- Full support for structured logging
+- Automatic property mapping to LogDB attributes
+- Exception handling and stack trace support
+- Correlation ID and activity tracking
+- Custom filtering support
+- Batching and retry support via LogDB client
+- Async target support
+		</PackageReleaseNotes>
+	</PropertyGroup>
+
+	<!-- Include README in package -->
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NLog" Version="6.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
+	</ItemGroup>
+
+	<!-- .NET Framework: reference assemblies for cross-platform build -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Reference LogDB.Client so NuGet dependency is emitted for package consumers -->
+		<ProjectReference Include="..\LogDB.Client\com.logdb.logger.csproj" />
+	</ItemGroup>
+
+</Project>
+

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net472;net8.0;net9.0;net10.0</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		
+		<!-- Package Identity -->
+		<PackageId>LogDB.Client</PackageId>
+		<Version>5.0.19</Version>
+		<Authors>LogDB Team</Authors>
+		<Company>LogDB</Company>
+		<Product>LogDB .NET Client</Product>
+		<Description>Complete LogDB client for .NET - Write logs, metrics, cache, and relations. Query them back with fluent API. Supports Microsoft.Extensions.Logging and OpenTelemetry.</Description>
+		
+		<!-- Package Metadata -->
+		<PackageProjectUrl>https://github.com/logdbhq/logdb-sdk</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/logdbhq/logdb-sdk</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>logging;logdb;telemetry;opentelemetry;monitoring;observability;metrics;tracing;grpc</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		
+		<!-- GitHub Packages -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		
+		<!-- Release Notes -->
+		<PackageReleaseNotes>
+v5.0.19 - Version Bump
+- Incremental release for LogDB.Client
+- Keeps package metadata aligned with docs and publish pipeline
+- No breaking API changes
+
+v5.0.18 - Version Line Alignment
+- Aligns LogDB.Client version with current public 5.0.18 release train
+- Keeps metadata in sync with SDK integrations and docs
+- No breaking API changes
+
+v5.0.0 - Standalone Package
+- BREAKING: Package is now fully standalone with no external dependencies on LogDB.Shared
+- All models are now defined within the package
+- Clean public API surface - internal implementation details hidden
+- Ready for open source distribution
+- Maintains full backward compatibility for public APIs
+
+v4.0.10 - Previous Release
+- Bug fixes and stability improvements
+		</PackageReleaseNotes>
+	</PropertyGroup>
+
+	<!-- Include README in package -->
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Prevent duplicate compile of generated files under artifacts/obj -->
+		<Compile Remove="artifacts\**\*.cs" />
+		<EmbeddedResource Remove="artifacts\**\*" />
+		<None Remove="artifacts\**\*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="ErrorLogger.cs\**" />
+		<Compile Remove="IErrorLogger.cs\**" />
+		<Compile Remove="LogErrorBuilder.cs\**" />
+		<Compile Remove="Examples\**" />
+		<EmbeddedResource Remove="ErrorLogger.cs\**" />
+		<EmbeddedResource Remove="IErrorLogger.cs\**" />
+		<EmbeddedResource Remove="LogErrorBuilder.cs\**" />
+		<EmbeddedResource Remove="Examples\**" />
+		<None Remove="ErrorLogger.cs\**" />
+		<None Remove="IErrorLogger.cs\**" />
+		<None Remove="LogErrorBuilder.cs\**" />
+		<None Remove="Examples\**" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- CS0618 suppressed because LogPoint and LogRelation are deliberately marked obsolete until they are enabled -->
+		<!-- CS8601-CS8604 on net472 are false-positives: Regex groups return null on that platform but models guard them -->
+		<NoWarn>$(NoWarn);CS0618</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
+		<NoWarn>$(NoWarn);CS8601;CS8602;CS8603;CS8604</NoWarn>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
+		<PackageReference Include="Grpc.Net.Client.Web" Version="2.71.0" />
+		<PackageReference Include="Google.Protobuf" Version="3.33.1" />
+		<PackageReference Include="Grpc.Tools" Version="2.76.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.1" />
+		<PackageReference Include="OpenTelemetry" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Api" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
+		<PackageReference Include="Polly" Version="8.6.4" />
+	</ItemGroup>
+
+	<!-- .NET Framework: additional packages + reference assemblies for cross-platform build -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+		<Reference Include="System.Net.Http" />
+		<PackageReference Include="System.Threading.Channels" Version="8.0.0" />
+		<PackageReference Include="System.Net.Http.Json" Version="8.0.1" />
+		<PackageReference Include="System.Net.Http.WinHttpHandler" Version="8.0.2" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="LogDB.Client.Tests" />
+	</ItemGroup>
+
+	<!-- NSec.Cryptography: net8.0+ only (no net472 support) -->
+	<ItemGroup Condition="'$(TargetFramework)' != 'net472'">
+		<PackageReference Include="NSec.Cryptography" Version="25.4.0" />
+	</ItemGroup>
+
+	<!-- Exclude V1 crypto files from net472 (require NSec + AesGcm, both net8.0+ only) -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+		<Compile Remove="Services\Crypto\**" />
+		<Compile Remove="Services\EncryptionServiceV1.cs" />
+		<Compile Remove="Models\EncryptedValueV1.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Proto file from grpc.logger (for writing logs) -->
+		<Protobuf Include="Protos\log_logger.proto" GrpcServices="Client" />
+		<!-- Proto file from grpc-server (for reading logs) -->
+		<Protobuf Include="Protos\log_server.proto" GrpcServices="Client" />
+	</ItemGroup>
+
+</Project>

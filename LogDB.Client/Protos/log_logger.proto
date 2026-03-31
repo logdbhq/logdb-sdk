@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+option csharp_namespace = "com.logdb.grpc.logger";
+
+import "google/protobuf/timestamp.proto";
+
+service LogGrpcService {
+  rpc Log(LogGrpcRequest) returns (LogGrpcResponse);
+  rpc LogPoint(LogPointGrpcRequest) returns (LogGrpcResponse);
+  rpc LogBeat(LogPointGrpcRequest) returns (LogGrpcResponse);
+  rpc LogCache(LogCacheGrpcRequest) returns (LogGrpcResponse);
+  rpc LogRelation(LogRelationGrpcRequest) returns (LogGrpcResponse);
+  
+  rpc SendCompressedLog (CompressedPayload) returns (LogGrpcResponse);
+  rpc SendCompressedLogPoint (CompressedPayload) returns (LogGrpcResponse);
+  rpc SendCompressedLogBeat (CompressedPayload) returns (LogGrpcResponse);
+  rpc SendCompressedLogCache (CompressedPayload) returns (LogGrpcResponse);
+  rpc SendCompressedLogRelation (CompressedPayload) returns (LogGrpcResponse);
+  
+  // Batch endpoints
+  rpc LogBatch(LogBatchRequest) returns (LogGrpcResponse);
+  rpc LogPointBatch(LogPointBatchRequest) returns (LogGrpcResponse);
+  rpc LogBeatBatch(LogPointBatchRequest) returns (LogGrpcResponse);
+  rpc LogCacheBatch(LogCacheBatchRequest) returns (LogGrpcResponse);
+  rpc LogRelationBatch(LogRelationBatchRequest) returns (LogGrpcResponse);
+  
+  // Compressed batch endpoints
+  rpc SendCompressedLogBatch (CompressedPayload) returns (LogGrpcResponse);
+  rpc SendCompressedLogPointBatch (CompressedPayload) returns (LogGrpcResponse);
+  rpc SendCompressedLogBeatBatch (CompressedPayload) returns (LogGrpcResponse);
+  rpc SendCompressedLogCacheBatch (CompressedPayload) returns (LogGrpcResponse);
+  rpc SendCompressedLogRelationBatch (CompressedPayload) returns (LogGrpcResponse);
+}
+
+message CompressedPayload {
+  bytes compressed_data = 1;
+}
+
+message LogGrpcRequest {  
+  string timestamp = 1;
+  string application = 2;
+  string environment = 3;
+  string level = 4;
+  string message = 5;
+  string exception = 6;
+  string stackTrace = 7;
+  string source = 8;
+  int32 userId = 9;
+  string userEmail = 10;
+  string correlationId = 11;
+  string requestPath = 12;
+  string httpMethod = 13;
+  string additionalData = 14;
+  string ipAddress = 15;
+  int32 statusCode = 16;
+  string description = 17;
+  string apiKey = 18;
+  string id = 19;
+  string guid = 20;
+  
+  repeated string label = 21;
+  map<string, string> attributes_s = 22;
+  map<string, double> attributes_n = 23;
+  map<string, bool> attributes_b = 24;
+  map<string, google.protobuf.Timestamp> attributes_d = 25;
+
+  string collection = 26;
+}
+
+
+message LogGrpcResponse {
+  string status = 1;
+}
+
+message LogPointGrpcRequest {
+    // The bucket is a string (same as C#)
+    string apikey = 1;
+    
+    // Measurement is a string (same as C#)
+    string measurement = 2;
+
+    // Tags are a list of key-value pairs
+    repeated LogMetaGrpc tag = 3;
+
+    // Fields are a list of key-value pairs
+    repeated LogMetaGrpc field = 4;
+
+    // Timestamp as ISO8601 string (or switch to google.protobuf.Timestamp if you prefer)
+    string timestamp = 5;
+
+    // Unique ID        
+    string guid = 6;
+
+    string collection = 7;
+
+    string environment = 8;
+}
+
+// Define metadata (key-value)
+message LogMetaGrpc {
+    // Metadata key
+    string key = 1;
+
+    // Metadata value
+    string value = 2;
+  
+}
+
+message LogCacheGrpcRequest {
+    string key = 1;
+    string value = 2;  
+    string guid = 3;
+    string apikey = 4;
+}
+
+message LogRelationGrpcRequest {
+  string apikey = 1;
+  string origin = 2;
+  string relation = 3;
+  string subject = 4;
+  repeated LogMetaGrpc originProperties = 5;
+  repeated LogMetaGrpc subjectProperties = 6;
+  repeated LogMetaGrpc relationProperties = 7;
+  string guid = 8;
+  string collection = 9;
+  google.protobuf.Timestamp date_in = 10;
+}
+
+message LogRelationEntry {
+  string origin = 1;
+  string subject = 2;
+  string relation = 3;
+  string guid = 4;
+  map<string, string> origin_properties = 5;
+  map<string, string> subject_properties = 6;
+  map<string, string> relation_properties = 7;
+  string collection = 8;
+  google.protobuf.Timestamp date_in = 9;
+}
+
+// Batch message definitions
+message LogBatchRequest {
+  repeated LogGrpcRequest logs = 1;
+}
+
+message LogPointBatchRequest {
+  repeated LogPointGrpcRequest logPoints = 1;
+}
+
+message LogCacheBatchRequest {
+  repeated LogCacheGrpcRequest logCaches = 1;
+}
+
+message LogRelationBatchRequest {
+  repeated LogRelationGrpcRequest logRelations = 1;
+}
