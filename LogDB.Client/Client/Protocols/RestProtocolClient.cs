@@ -83,7 +83,7 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/log/event", log, cancellationToken);
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/event", log, cancellationToken);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -110,7 +110,7 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/log/point", logPoint, cancellationToken);
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/point", logPoint, cancellationToken);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -131,7 +131,7 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/log/beat", logBeat, cancellationToken);
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/beat", logBeat, cancellationToken);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -152,7 +152,7 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/log/cache", logCache, cancellationToken);
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/cache", logCache, cancellationToken);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -173,7 +173,7 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/log/relation", logRelation, cancellationToken);
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/relation", logRelation, cancellationToken);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -190,15 +190,24 @@ namespace LogDB.Extensions.Logging
             }
         }
 
-        // Batch methods - send individual calls in parallel
+        // Batch methods - use dedicated batch endpoints for efficiency
         public async Task<LogResponseStatus> SendLogBatchAsync(IReadOnlyList<Log> logs, CancellationToken cancellationToken = default)
         {
             try
             {
-                // Send individual calls instead of batch
-                var tasks = logs.Select(log => SendLogAsync(log, cancellationToken));
-                var results = await Task.WhenAll(tasks);
-                return results.All(r => r == LogResponseStatus.Success) ? LogResponseStatus.Success : LogResponseStatus.Failed;
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/event/batch", logs, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<LogResponse?>(cancellationToken: cancellationToken);
+                    return result?.Status ?? LogResponseStatus.Failed;
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    return LogResponseStatus.NotAuthorized;
+
+                _logger?.LogWarning("REST API batch request failed with status {StatusCode}", response.StatusCode);
+                return LogResponseStatus.Failed;
             }
             catch (Exception ex)
             {
@@ -211,10 +220,19 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                // Send individual calls instead of batch
-                var tasks = logPoints.Select(lp => SendLogPointAsync(lp, cancellationToken));
-                var results = await Task.WhenAll(tasks);
-                return results.All(r => r == LogResponseStatus.Success) ? LogResponseStatus.Success : LogResponseStatus.Failed;
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/point/batch", logPoints, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<LogResponse?>(cancellationToken: cancellationToken);
+                    return result?.Status ?? LogResponseStatus.Failed;
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    return LogResponseStatus.NotAuthorized;
+
+                _logger?.LogWarning("REST API batch request failed with status {StatusCode}", response.StatusCode);
+                return LogResponseStatus.Failed;
             }
             catch (Exception ex)
             {
@@ -227,10 +245,19 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                // Send individual calls instead of batch
-                var tasks = logBeats.Select(lb => SendLogBeatAsync(lb, cancellationToken));
-                var results = await Task.WhenAll(tasks);
-                return results.All(r => r == LogResponseStatus.Success) ? LogResponseStatus.Success : LogResponseStatus.Failed;
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/beat/batch", logBeats, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<LogResponse?>(cancellationToken: cancellationToken);
+                    return result?.Status ?? LogResponseStatus.Failed;
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    return LogResponseStatus.NotAuthorized;
+
+                _logger?.LogWarning("REST API batch request failed with status {StatusCode}", response.StatusCode);
+                return LogResponseStatus.Failed;
             }
             catch (Exception ex)
             {
@@ -243,10 +270,19 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                // Send individual calls instead of batch
-                var tasks = logCaches.Select(lc => SendLogCacheAsync(lc, cancellationToken));
-                var results = await Task.WhenAll(tasks);
-                return results.All(r => r == LogResponseStatus.Success) ? LogResponseStatus.Success : LogResponseStatus.Failed;
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/cache/batch", logCaches, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<LogResponse?>(cancellationToken: cancellationToken);
+                    return result?.Status ?? LogResponseStatus.Failed;
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    return LogResponseStatus.NotAuthorized;
+
+                _logger?.LogWarning("REST API batch request failed with status {StatusCode}", response.StatusCode);
+                return LogResponseStatus.Failed;
             }
             catch (Exception ex)
             {
@@ -259,10 +295,19 @@ namespace LogDB.Extensions.Logging
         {
             try
             {
-                // Send individual calls instead of batch
-                var tasks = logRelations.Select(lr => SendLogRelationAsync(lr, cancellationToken));
-                var results = await Task.WhenAll(tasks);
-                return results.All(r => r == LogResponseStatus.Success) ? LogResponseStatus.Success : LogResponseStatus.Failed;
+                var response = await _httpClient.PostAsJsonAsync("/rest-api/log/relation/batch", logRelations, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<LogResponse?>(cancellationToken: cancellationToken);
+                    return result?.Status ?? LogResponseStatus.Failed;
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    return LogResponseStatus.NotAuthorized;
+
+                _logger?.LogWarning("REST API batch request failed with status {StatusCode}", response.StatusCode);
+                return LogResponseStatus.Failed;
             }
             catch (Exception ex)
             {
